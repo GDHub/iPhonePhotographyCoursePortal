@@ -14,7 +14,6 @@ class CreateEventlogTable extends Migration
     public function up()
     {
         Schema::create('eventlog', function (Blueprint $table) {
-            $table->id('eventlog_id');
             $table->increments('eventlog_id');
             $table->enum('eventtype', ['LESSONWATCHED', 'COMMENTWRITTEN']);
             $table->foreignId('user_id')->constrained();

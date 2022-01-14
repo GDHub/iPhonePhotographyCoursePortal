@@ -14,7 +14,6 @@ class CreateBadgelogTable extends Migration
     public function up()
     {
         Schema::create('badgelog', function (Blueprint $table) {
-            $table->id();
             $table->increments('id');
             $table->foreignId('user_id')->constrained();
             $table->string('badge', 200);
