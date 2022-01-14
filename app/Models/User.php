@@ -58,6 +58,22 @@ class User extends Authenticatable
     }
 
     /**
+     * The events that belong to the user.
+     */
+    public function events()
+    {
+        return $this->hasMany(EventLog::class);
+    }
+
+    /**
+     * The badges that belong to the user.
+     */
+    public function badges()
+    {
+        return $this->hasMany(BadgeLog::class);
+    }
+
+    /**
      * The lessons that a user has watched.
      */
     public function watched()
