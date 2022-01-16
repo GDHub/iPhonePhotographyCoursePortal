@@ -26,7 +26,13 @@ class AchievementUnlocked
      */
     public function __construct(string $achievement_name, User $user)
     {
-        
+        try{
+            DB::table('achievementlog')->insert(['achievement' => $achievement_name, 'user_id' => $user->id]);
+        }
+        catch(Throwable $exp)
+        {
+            report($exp);
+        }
     }
 
     /**

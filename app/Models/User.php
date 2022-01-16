@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use App\Models\Comment;
+use App\Models\AchievementLog;
+use App\Models\BadgeLog;
+use App\Models\EventLog;
+use App\Models\Lesson;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -71,6 +75,14 @@ class User extends Authenticatable
     public function badges()
     {
         return $this->hasMany(BadgeLog::class);
+    }
+
+    /**
+     * The achievements that belong to the user.
+     */
+    public function achievements()
+    {
+        return $this->hasMany(AchievementLog::class);
     }
 
     /**
