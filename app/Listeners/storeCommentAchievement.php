@@ -35,6 +35,7 @@ class storeCommentAchievement
             //Check if User has written any comment before now
             $commentCount = DB::table('comment')->where('user_id', $commentWriter->id)->count();
             $eventCount = DB::table('eventlog')->where('user_id', $commentWriter->id)->count();
+            $achievementCount = DB::table('achievementlog')->where('user_id', $commentWriter->id)->count();
             
             if(!isset($commentCount) or $commentCount == 1)
             {
@@ -45,6 +46,7 @@ class storeCommentAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'COMMENTWRITTEN', 'comment' => 'First Comment Written', 'user_id' => $commentWriter->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $commentWriter);
             }
             elseif($commentCount == 3)
             {
@@ -55,6 +57,7 @@ class storeCommentAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'COMMENTWRITTEN', 'comment' => '3 Comments Written', 'user_id' => $commentWriter->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $commentWriter);
             }
             elseif($commentCount == 5)
             {
@@ -65,6 +68,7 @@ class storeCommentAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'COMMENTWRITTEN', 'comment' => '5 Comments Written', 'user_id' => $commentWriter->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $commentWriter);
             }
             elseif($commentCount == 10)
             {
@@ -75,6 +79,7 @@ class storeCommentAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'COMMENTWRITTEN', 'comment' => '10 Comments Written', 'user_id' => $commentWriter->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $commentWriter);
             }
             elseif($commentCount == 20)
             {
@@ -85,6 +90,7 @@ class storeCommentAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'COMMENTWRITTEN', 'comment' => '20 Comments Written', 'user_id' => $commentWriter->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $commentWriter);
             }
             elseif(isset($commentCount))
             {
@@ -96,6 +102,35 @@ class storeCommentAchievement
         catch(Throwable $exp)
         {
             report($exp);
+        }
+    }
+
+    private function isBadgeUnlocked($noOfAchievement, $user)
+    {
+        $currentAchievement = DB::table('achievementlog')->where('user_id', $user->id);
+
+        if(isset($currentAchievement))
+        {
+            if($noOfAchievement == 4)
+            {
+                //Intermediate Badge Unlocked
+                BadgeUnlocked::dispatch('Intermediate', $commentWriter);
+            }
+            elseif($noOfAchievement == 8)
+            {
+                //Advanced Badge Unlocked
+                BadgeUnlocked::dispatch('Advanced', $commentWriter);
+            }
+            elseif($noOfAchievement == 10)
+            {
+                //Master Badge Unlocked
+                BadgeUnlocked::dispatch('Master', $commentWriter);
+            }
+        }
+        else
+        {
+            //Beginner Badge Unlocked
+            BadgeUnlocked::dispatch('Beginner', $commentWriter);
         }
     }
 }

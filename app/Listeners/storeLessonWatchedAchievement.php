@@ -33,6 +33,7 @@ class storeLessonWatchedAchievement
             //Check if User has written any comment before now
             $watchedCount = DB::table('lesson_user')->where('user_id', $lessonWatcher->id)->count();
             $eventCount = DB::table('eventlog')->where('user_id', $lessonWatcher->id)->count();
+            $achievementCount = DB::table('achievementlog')->where('user_id', $lessonWatcher->id)->count();
             
             if(isset($watchedCount) && $watchedCount == 1)
             {
@@ -43,6 +44,7 @@ class storeLessonWatchedAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'LESSONWATCHED', 'comment' => 'First Lesson Watched', 'user_id' => $lessonWatcher->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $lessonWatcher);
             }
             elseif($watchedCount == 5)
             {
@@ -53,6 +55,7 @@ class storeLessonWatchedAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'LESSONWATCHED', 'comment' => '5 Lessons Watched', 'user_id' => $lessonWatcher->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $lessonWatcher);
             }
             elseif($watchedCount == 10)
             {
@@ -63,6 +66,7 @@ class storeLessonWatchedAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'LESSONWATCHED', 'comment' => '10 Lessons Watched', 'user_id' => $lessonWatcher->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $lessonWatcher);
             }
             elseif($watchedCount == 25)
             {
@@ -73,6 +77,7 @@ class storeLessonWatchedAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'LESSONWATCHED', 'comment' => '25 Lessons Watched', 'user_id' => $lessonWatcher->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $lessonWatcher);
             }
             elseif($watchedCount == 50)
             {
@@ -83,6 +88,7 @@ class storeLessonWatchedAchievement
                 DB::table('eventlog')->insert(['eventtype' => 'LESSONWATCHED', 'comment' => '50 Lessons Watched', 'user_id' => $lessonWatcher->id]);
 
                 //Badge Unlocked Event Check
+                isBadgeUnlocked($achievementCount + 1, $lessonWatcher);
             }
             elseif(isset($watchedCount) && $watchedCount > 1)
             {
@@ -94,6 +100,35 @@ class storeLessonWatchedAchievement
         catch(Throwable $exp)
         {
             report($exp);
+        }
+    }
+
+    private function isBadgeUnlocked($noOfAchievement, $user)
+    {
+        $currentAchievement = DB::table('achievementlog')->where('user_id', $user->id);
+
+        if(isset($currentAchievement))
+        {
+            if($noOfAchievement == 4)
+            {
+                //Intermediate Badge Unlocked
+                BadgeUnlocked::dispatch('Intermediate', $commentWriter);
+            }
+            elseif($noOfAchievement == 8)
+            {
+                //Advanced Badge Unlocked
+                BadgeUnlocked::dispatch('Advanced', $commentWriter);
+            }
+            elseif($noOfAchievement == 10)
+            {
+                //Master Badge Unlocked
+                BadgeUnlocked::dispatch('Master', $commentWriter);
+            }
+        }
+        else
+        {
+            //Beginner Badge Unlocked
+            BadgeUnlocked::dispatch('Beginner', $commentWriter);
         }
     }
 }
