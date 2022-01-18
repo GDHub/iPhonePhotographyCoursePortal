@@ -22,5 +22,6 @@ class ExampleTest extends TestCase
         $response = $this->get("/users/{$user->id}/achievements");
 
         $response->assertStatus(200);
+        //$response->dump();
     }
 }
