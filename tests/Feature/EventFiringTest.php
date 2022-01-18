@@ -6,9 +6,11 @@ use App\Events\AchievementUnlocked;
 use App\Events\BadgeUnlocked;
 use App\Events\CommentWritten;
 use App\Events\LessonWatched;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -21,7 +23,15 @@ class EventFiringTest extends TestCase
      */
     public function test_achievement_can_be_unlocked()
     {
-        Event::fake();
+        $fake = Event::fake();
+        DB::setEventDispatcher($fake);
+
+        // Ignore the exception so the test itself can continue.
+        $this->expectException('Exception');
+
+        $this->middleware->handle($this->request, function () {
+            throw new Exception('Transaction should fail');
+        });
 
         // Assert that an event was dispatched...
         Event::assertDispatched(AchievementUnlocked::class);
@@ -40,7 +50,15 @@ class EventFiringTest extends TestCase
      */
     public function test_badge_can_be_unlocked()
     {
-        Event::fake();
+        $fake = Event::fake();
+        DB::setEventDispatcher($fake);
+
+        // Ignore the exception so the test itself can continue.
+        $this->expectException('Exception');
+
+        $this->middleware->handle($this->request, function () {
+            throw new Exception('Transaction should fail');
+        });
 
         // Assert that an event was dispatched...
         Event::assertDispatched(BadgeUnlocked::class);
@@ -59,7 +77,15 @@ class EventFiringTest extends TestCase
      */
     public function test_comment_is_written()
     {
-        Event::fake();
+        $fake = Event::fake();
+        DB::setEventDispatcher($fake);
+
+        // Ignore the exception so the test itself can continue.
+        $this->expectException('Exception');
+
+        $this->middleware->handle($this->request, function () {
+            throw new Exception('Transaction should fail');
+        });
 
         // Assert that an event was dispatched...
         Event::assertDispatched(CommentWritten::class);
@@ -78,7 +104,15 @@ class EventFiringTest extends TestCase
      */
     public function test_lesson_is_watched()
     {
-        Event::fake();
+        $fake = Event::fake();
+        DB::setEventDispatcher($fake);
+
+        // Ignore the exception so the test itself can continue.
+        $this->expectException('Exception');
+
+        $this->middleware->handle($this->request, function () {
+            throw new Exception('Transaction should fail');
+        });
 
         // Assert that an event was dispatched...
         Event::assertDispatched(LessonWatched::class);
